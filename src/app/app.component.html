@@ -1,0 +1,481 @@
+<header class="bg-white shadow px-6 py-4 flex items-center" style="display: flex; align-items: center;">
+
+  <div class="header-left">
+    <h1 class="text-2xl font-bold text-blue-600 flex-shrink-0">Elevate 360° - My Performance Dashboard</h1>
+  </div>
+
+  <div class="flex justify-center" style="flex: 1 1 0; display: flex; justify-content: center;">
+    <div class="flex items-center gap-2">
+      <label for="premiumFilter" class="text-lg font-bold text-gray-800">Business Line:</label>
+      <select id="premiumFilter"
+        class="text-lg font-semibold border-2 border-blue-400 rounded-xl px-4 py-2 bg-white shadow focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-200"
+        [(ngModel)]="selectedBusinessline" (change)="onBusinessLineChange()">
+        <option value="Select">Select</option>
+        <option value="GCP Tech Premium">GCP Tech Premium</option>
+        <option value="GCP Tech Non-Premium">GCP Tech Non-Premium</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="header-right" style="flex: 1 1 0; display: flex; justify-content: flex-end;">
+   
+      <!-- Optional right section like avatar or menu -->
+      <div class="flex items-center space-x-4">
+
+        <div class="notification-container">
+          <button (click)="toggleNotification()" class="bell-button">
+            <span class="icon-wrapper">
+              <i class="fa-solid fa-bell"></i>
+              <div *ngIf="!showNotification" class="notification-badge"></div>
+            </span>
+          </button>
+
+          <!-- <div *ngIf="showNotification" class="notification-box">
+            Great News! <strong>Monica just soared right to the top of TTP leaderboard!</strong>
+          </div> -->
+        </div>
+
+      </div>
+    </div>
+  
+</header>
+
+<div class="banner">
+
+  <div class="banner-left">
+    <h2 class="text-white text-base font-bold mb-2">Hey {{ userName }}, buckle up!</h2>
+    <p class="text-white text-base mb-2">You've completed 60% of your learning goals. You're just one step away from
+      your next badge!
+    </p>
+    <p class="text-white italic text-base"><em>Specialization:</em> <strong> {{ userSpecialization }} </strong></p>
+    <p class="banner-meta"><em>Rank:</em> <strong>8 / 10</strong></p>
+  </div>
+
+  <div class="banner-right">
+    <div class="badge-group">
+      <div class="badge-item">
+        <img src="1.png" alt="Cloud Digital Leader" class="badge-img" />
+        <div class="badge-label">Cloud Digital Leader</div>
+      </div>
+      <div class="badge-item">
+        <img src="2.png" alt="Cloud Engineer" class="badge-img" />
+        <div class="badge-label">Cloud Engineer</div>
+      </div>
+      <div class="badge-item">
+        <img src="3.png" alt="Cloud Architect" class="badge-img" />
+        <div class="badge-label">Cloud Architect</div>
+      </div>
+    </div>
+    <img src="motivation.png" alt="Person at Laptop" class="banner-illustration" />
+  </div>
+</div>
+
+<!-- calender filter -->
+
+<div class="flex items-center justify-between px-4 py-3">
+  <div class="flex items-center gap-3">
+    <label class="text-lg font-bold text-gray-800">Select Time Zone:</label>
+    <select
+      class="text-lg font-semibold border-2 border-blue-400 rounded-xl px-4 py-2 bg-white shadow focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-200">
+      <option value="Select Zone">Select Zone</option>
+      <option value="apac">APAC</option>
+      <option value="emea">EMEA</option>
+      <option value="amer">AMER</option>
+    </select>
+  </div>
+
+  <div class="flex items-center gap-4 p-3 bg-gray-100 rounded-lg max-w-fit">
+    <mat-form-field>
+      <mat-label>Start Date</mat-label>
+      <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate" (dateChange)="applyFilter()">
+      <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>End Date</mat-label>
+      <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate" (dateChange)="applyFilter()">
+      <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+
+    <button mat-raised-button (click)="applyFilter()"
+      class="bg-blue-500 hover:bg-blue-600 text-white rounded-full h-10 px-5 text-sm shadow-md transition-colors duration-200">
+      Apply Filter
+    </button>
+  </div>
+</div>
+
+
+<div class="content-grid">
+  <!-- My Performance -->
+  <div class="card performance">
+    <h4>My Performance</h4>
+    <div class="rating">
+      {{ userRating }} / {{ ratingOutOf }}
+      <div class="toggle">
+        <button [class.active]="isWeekly" (click)="toggleData(true)">Week</button>
+        <button [class.active]="!isWeekly" (click)="toggleData(false)">Month</button>
+      </div>
+    </div>
+    <span class="text"> Overall Rating</span>
+    <ul>
+      <li *ngFor="let metric of performanceMetrics">
+        <div>
+          <span [class.clickable]="metric.label === 'CES'" (click)="metric.label === 'CES' && openCesModal()">
+            {{ metric.label }}
+          </span>
+
+          <small *ngIf="metric.detail">
+            <span *ngIf="metric.label === 'Innovation/Transformation Ideas'" class="view-details-link"
+              (click)="openInnovationModal($event)">
+              {{ metric.detail }}
+            </span>
+            <span *ngIf="metric.label === 'TTP'" class="analysis-link">
+              <a href="#"
+                class="text-blue-700 text-2xl md:text-3xl font-bold hover:underline mt-4 w-fit block text-center transition"
+                (click)="openTtpModal($event); $event.preventDefault()">
+                {{ metric.detail }}
+              </a>
+            </span>
+
+            <span *ngIf="metric.label !== 'Innovation/Transformation Ideas' && metric.label !== 'TTP'">
+              {{ metric.detail }}
+            </span>
+          </small>
+        </div>
+
+        <span [style.color]="metric.highlight">
+          {{ metric.label === 'CES'
+          ? cesPercentage
+          : metric.label === 'FMR Timeline'
+          ? fmrTimeline
+          : metric.label === 'SDR'
+          ? sdrPercentage
+          : metric.value }}
+        </span>
+
+      </li>
+
+      <!-- CES Modal -->
+      <div *ngIf="isCesModalOpen" class="modal-overlay">
+        <div class="modal-card" style="min-width: 400px; max-width: 90vw;">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-sm text-gray font-bold">Customer Effort Score (CES)</h2>
+            <button (click)="closeCesModal()" class="modal-close"
+              style="flex:0 0 auto; margin-left:auto;">&times;</button>
+          </div>
+          <p>Your CES: <strong>{{ cesPercentage }}</strong></p>
+        </div>
+      </div>
+
+
+      <!-- Innovation/Transformation Ideas Modal -->
+      <div *ngIf="isInnovationModalOpen" class="modal-overlay">
+        <div class="modal-card" style="min-width: 400px; max-width: 90vw;">
+          <div class="flex justify-between items-center mb-4">
+            <h2 class="text-sm text-gray font-bold">Innovation/Transformation Ideas</h2>
+            <button (click)="closeInnovationModal()" class="modal-close"
+              style="flex:0 0 auto; margin-left:auto;">&times;</button>
+          </div>
+          <div class="innovation-status on-track">
+            <div class="status-title text-green-600">On Track</div>
+            <div class="status-desc">
+              Your innovation initiatives are progressing as planned. Keep up the good work!
+            </div>
+          </div>
+          <div class="innovation-status off-track">
+            <div class="status-title" style="color:#dc2626 ;">Off Track</div>
+            <div class="status-desc">
+              Some transformation ideas need attention. Please review and take necessary actions.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TTP Modal -->
+      <div *ngIf="isTtpModalOpen" class="modal-overlay">
+        <div class="modal-card" style="min-width: 400px; min-height: 400px; 
+              display: flex; flex-direction: column; justify-content: center; align-items: center; 
+              padding: 20px;">
+          <div class="flex justify-between items-center mb-4" style="width: 100%;">
+            <h2 class="text-2xl font-bold text-blue-700">Performance Analysis</h2>
+            <button (click)="closeTtpModal()" class="modal-close">&times;</button>
+          </div>
+
+          <div class="chart-container" style="position: relative; height:400px; width:100%; 
+                                        display: flex; justify-content: center; align-items: center;">
+            <canvas baseChart [data]="youVsFirstData" [options]="youVsFirstOptions" [type]="'bar'">
+            </canvas>
+          </div>
+        </div>
+      </div>
+
+    </ul>
+
+    <!-- Key Button -->
+    <div style="display: flex; justify-content: flex-end; width: 100%;" class="mt-4">
+      <button (click)="showKeyPopup()" class="key-btn">Key</button>
+    </div>
+  </div>
+
+  <!-- Key Modal -->
+  <div *ngIf="isKeyPopupOpen" class="modal-overlay">
+    <div class="modal-card">
+
+      <div class="flex mb-6" style="align-items: center;">
+        <h2 class="text-xl font-bold text-blue-700" style="flex:1 1 auto;">Performance Key</h2>
+        <button (click)="closeKeyPopup()" class="modal-close" style="flex:0 0 auto; margin-left:auto;">&times;</button>
+      </div>
+      <div>
+        <div class="mb-5">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="font-bold text-gray-700">FMR Timeline</span>
+          </div>
+          <div class="ml-7">
+            <span class="text-green-600 font-bold">Target - 100%</span>
+            <div class="text-green-600 font-semibold text-sm mt-1 flex items-center gap-1">
+              <i class="fas fa-clock"></i>
+              2.5 Average FMR Hours
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 mb-0">
+          <span class="font-bold text-gray-700">Well Handled Cases</span>
+        </div>
+        <div class="ml-7 mt-0">
+          <span class="text-green-600 font-bold">Target - RCTS</span>
+          <div class="text-black-600 font-semibold text-sm mt-1 flex flex-col gap-1">
+            <div class="flex items-start gap-1">
+              <span>
+                <span class="text-blue-600 font-semibold">1. Resolution efficiency:</span>
+                Same day resolution
+              </span>
+            </div>
+            <div class="flex items-start gap-1">
+              <!-- <i class="fas fa-clock mt-1"></i> -->
+              <span>
+                <span class="text-blue-600 font-semibold">2. Customer experience:</span>
+                Not reopened, not re escalated, zero error cases
+              </span>
+            </div>
+            <div class="flex items-start gap-1">
+              <!-- <i class="fas fa-clock mt-1"></i> -->
+              <span>
+                <span class="text-blue-600 font-semibold">3. Timeliness:</span>
+                TTM, time to consult, time to bug
+              </span>
+            </div>
+            <div class="flex items-start gap-1">
+              <!-- <i class="fas fa-clock mt-1"></i> -->
+              <span>
+                <span class="text-blue-600 font-semibold">4. Self sufficiency:</span>
+                not exceeding consult threshold / consult rate
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Case Closed -->
+  <div *ngIf="isCaseClosedModalOpen" class="modal-overlay">
+    <div class="modal">
+      <h2>Case Closed Details</h2>
+      <ul>
+        <li *ngFor="let detail of caseClosedDetails">
+          <span class="detail-heading">{{ detail.split(':')[0] }}</span>
+          <span class="stat">{{ detail.split(':')[1] }}</span>
+        </li>
+      </ul>
+      <button (click)="closeCaseClosedModal()">Close</button>
+    </div>
+  </div>
+
+  <!-- Learning Challenges -->
+  <div class="card learning-journey">
+    <h4>Learning Journey</h4>
+    <span class="label">Overall Score on Learning</span>
+    <div class="overall-score">
+      <span class="score">60%</span>
+    </div>
+    <div class="section-title mandatory">Mandatory Learning</div>
+    <div class="learning-item">
+      <div class="item-header">
+        <span>Vertex AI Learning Journey</span>
+        <span class="status completed">Completed</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress completed" style="width: 92%"></div>
+      </div>
+      <div class="item-detail">Score: 92%</div>
+    </div>
+    <div class="learning-item">
+      <div class="item-header">
+        <span>Code of Conduct</span>
+        <span class="status pending">Pending</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress pending" style="width: 50%"></div>
+      </div>
+      <div class="item-detail eta">ETA: 2 days</div>
+    </div>
+    <div class="section-title suggested">Learning Suggested by Lead</div>
+    <div class="learning-item">
+      <div class="item-header">
+        <span>LLMs GenAI &amp; AI Powered Search</span>
+        <span class="status completed">Completed</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress completed" style="width: 85%"></div>
+      </div>
+      <div class="item-detail">Score: 85%</div>
+    </div>
+    <div class="learning-item">
+      <div class="item-header">
+        <span>Conversational AI Learning Journey</span>
+        <span class="status inprogress">In Progress</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress inprogress" style="width: 30%"></div>
+      </div>
+      <div class="item-detail eta">ETA: 3 days</div>
+    </div>
+    <div class="wishlist-section">
+      <div class="wishlist-title">Learning Wishlist</div>
+      <div class="wishlist-input-row">
+        <textarea [(ngModel)]="learningRequest" placeholder="Enter your learning request here..." rows="1"></textarea>
+        <button (click)="submitLearningRequest()" class="wishlist-submit">Submit</button>
+      </div>
+    </div>
+    <!-- modal for closed cazse -->
+    <div *ngIf="isCaseClosedModalOpen" class="modal-overlay">
+      <div class="modal-card">
+        <button class="modal-close" (click)="closeCaseClosedModal()">&times;</button>
+        <h2>Case Closed Details</h2>
+        <ul>
+          <li *ngFor="let detail of caseClosedDetails">
+            <span class="detail-heading">{{ detail.split(':')[0] }}</span>
+            <span class="stat">{{ detail.split(':')[1] }}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Team Leaderboard -->
+  <div class="right-column">
+    <!-- Team Leaderboard Card -->
+    <div class="card leaderboard">
+      <div class="leaderboard-header">
+        <h4>Team Leaderboard</h4>
+        <span class="team-size">10 in my team</span>
+      </div>
+      <div class="my-rank">My Rank: <span class="rank">8 / 10</span></div>
+      <ul class="team-list">
+        <li *ngFor="let member of teamLeaderboard">
+          <span [class.current-user]="isCurrentUser(member)">{{ member.name }}</span>
+          <span class="score" [class.current-user]="isCurrentUser(member)">{{ member.score }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- TTP Dashboard -->
+    <div class="card leaderboard">
+      <!-- Loading and Error States -->
+      @if (isLoading()) {
+      <div class="text-center p-12 text-blue-600 font-semibold">
+        <svg class="animate-spin h-8 w-8 text-blue-600 mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+          </path>
+        </svg>
+        Fetching Compliance Data...
+      </div>
+      } @else if (error()) {
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl shadow-md" role="alert">
+        <strong class="font-bold">Error:</strong>
+        <span class="block sm:inline ml-2">{{ error() }}</span>
+        <p class="text-sm mt-1">Please check the backend API server and BigQuery connection (currently set to
+          http://localhost:3000/api/mounika).</p>
+      </div>
+      } @else {
+      <!-- Detailed Metrics List (Time to Proficiency Dashboard Card) -->
+      
+        <h4 class="text-xl font-bold text-gray-800 mb-6 border-b pb-2">Time to Proficiency Dashboard</h4>
+
+        <div class="space-y-3">
+          @for (metric of metrics(); track metric.label) {
+          <!-- List item container -->
+          <div
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 rounded-lg transition duration-200 hover:bg-gray-100">
+            
+            <!-- Label -->
+            <div class="pdt-header flex items-center gap-2">
+              <span>
+                {{ metric.label }} 
+              </span>
+              <!-- extra text shown only for Security Command Center -->
+              <span *ngIf="metric.label === 'Security Command Center'"
+                    class="ml-3 text-sm text-gray-600">
+                (SLS:13.89%)
+              </span>
+              <span *ngIf="metric.label === 'Cloud Asset Inventory'"
+                    class="ml-3 text-sm text-gray-600">
+                (SLS:14.22%)
+              </span>
+              <span *ngIf="metric.label === 'IAP'"
+                    class="ml-3 text-sm text-gray-600">
+                (SLS:15.54%)
+              </span>
+              <span *ngIf="metric.label === 'IAM'"
+                    class="ml-3 text-sm text-gray-600">
+                (SLS:13.23%)
+              </span>
+              <span *ngIf="metric.label === 'VPC SC'"
+                    class="ml-3 text-sm text-gray-600">
+                (SLS:14.39%)
+              </span>
+              <span *ngIf="metric.label === 'Recaptcha'"
+                    class="ml-3 text-sm text-gray-600">
+                (SLS:13.73%)
+              </span>          
+            </div>
+
+            <!-- Progress Bar and Score -->
+            <div class="w-full sm:w-2/3 flex items-center">
+            <div class="w-full bg-gray-200 rounded-full h-2 mr-4 overflow-hidden">
+              <div class="h-2 rounded-full transition-all duration-1000 ease-out" [style.width.%]="getBarWidth(metric.value)"
+                [style.background-color]="getBarColorValue(metric.value)">
+              </div>
+            </div>
+              <!-- Score text color matching compliance status -->
+              <span class="text-sm font-bold w-10 text-right" [class]="getScoreTextColor(metric.value)">
+                {{ metric.value }}%
+              </span>
+            </div>
+            
+          </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- To-Do Tasks Card -->
+    <div class="card todo-card">
+      <div class="leaderboard-header">
+        <h4>Your To-Do Tasks</h4>
+      </div>
+      <ul class="todo-list">
+        <li *ngFor="let task of learningTasks">
+          <button (click)="showMissions(task)" class="todo-btn">
+            {{ task }}
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
