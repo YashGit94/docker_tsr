@@ -9,13 +9,15 @@ RUN npm install --silent
 COPY . .
 
 # 3. Build the Angular application for production
-# This uses the correct ng build command structure to create the 'dist' folder.
 RUN npm run build -- --configuration=production --base-href=/
+
+
+RUN ls -R /app/dist
+# ===========================
 
 # --- Stage 2: Production Stage (Uses a tiny Nginx image to serve static files) ---
 FROM nginx:alpine
 
-# 4.Copy the built files from the 'build' stage to Nginx's web root
 COPY --from=build /app/dist/browser /usr/share/nginx/html
 
 # Nginx runs on port 80 by default
