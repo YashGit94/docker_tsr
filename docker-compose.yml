@@ -12,6 +12,8 @@ services:
       - "80:80"
     networks:
       - app-network
+    depends_on:
+      - backend
 
   # --- 2. Backend Service (Node.js API) ---
   backend:
@@ -22,8 +24,8 @@ services:
     ports:
       # Expose the backend for direct debugging via http://localhost:3000/
       - "3000:3000"
-    depends_on:
-      - frontend 
+    #depends_on:
+     # - frontend 
     networks:
       - app-network
     # CRITICAL: This is the URL your Angular code must use to access the API.
