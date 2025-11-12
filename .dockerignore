@@ -9,3 +9,5 @@ out-tsc
 .gitignore
 .editorconfig
 tmp
+
+src/keys.json
