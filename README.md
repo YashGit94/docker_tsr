@@ -11,7 +11,6 @@ Run the Application ng serve --open
 link for localhost: http://localhost:4200/
 
 Docker Commands
-1. docker build -t tsr_ttp-image .  # create the image
-2. docker run -d -p 8080:80 --name tsr_ttp-app tsr_ttp-image #running the image
+1. **docker compose up --build -d**
 3. docker ps #Find the ID or name of your running container
 4. docker rm -f tsr_ttp-app #stop and remove the running container
