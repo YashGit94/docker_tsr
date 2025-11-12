@@ -3,7 +3,7 @@ WORKDIR /app
 
 # 1. Install dependencies (only production dependencies for running the server)
 COPY package.json package-lock.json ./
-RUN npm install --production --silent
+RUN npm install --silent
 
 # 2. Copy all source code (including your src/index.js and keys file)
 COPY . .
