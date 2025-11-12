@@ -12,8 +12,10 @@ services:
       - "80:80"
     networks:
       - app-network
-   # depends_on:
-     # - backend
+   depends_on:
+      - backend:
+        condition: service_healthy      
+      
 
   # --- 2. Backend Service (Node.js API) ---
   backend:
@@ -24,14 +26,19 @@ services:
     ports:
       # Expose the backend for direct debugging via http://localhost:3000/
       - "3000:3000"
-    depends_on:
-      - frontend 
+    #depends_on:
+      #- frontend 
     networks:
       - app-network
     # CRITICAL: This is the URL your Angular code must use to access the API.
     # 'backend' is the service name defined above, not 'localhost'.
     environment:
       API_URL: http://backend:3000/api/v1/ 
+      healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"] # Replace /health with a real endpoint
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
 # Define a custom network for inter-service communication
 networks:
