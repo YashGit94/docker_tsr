@@ -1,0 +1,65 @@
+<div class="banner">
+
+  <div class="banner-left">
+    <h2 class="text-white text-base font-bold mb-2">Hey {{ userName }}, buckle up!</h2>
+    <p class="text-white text-base mb-2">You've completed 60% of your learning goals. You're just one step away from
+      your next badge!
+    </p>
+    <p class="text-white italic text-base"><em>Specialization: </em> <strong> <i>{{ userSpecialization }}</i> </strong></p>
+    <p class="banner-meta"><em>Rank:</em> <strong>8 / 10</strong></p>
+  </div>
+
+  <div class="banner-right">
+    <div class="badge-group">
+      <div class="badge-item">
+        <img src="1.png" alt="Cloud Digital Leader" class="badge-img" />
+        <div class="badge-label">Cloud Digital Leader</div>
+      </div>
+      <div class="badge-item">
+        <img src="2.png" alt="Cloud Engineer" class="badge-img" />
+        <div class="badge-label">Cloud Engineer</div>
+      </div>
+      <div class="badge-item">
+        <img src="3.png" alt="Cloud Architect" class="badge-img" />
+        <div class="badge-label">Cloud Architect</div>
+      </div>
+    </div>
+    <img src="motivation.png" alt="Person at Laptop" class="banner-illustration" />
+  </div>
+</div>
+
+<!-- calender filter -->
+
+<div class="flex items-center justify-between px-4 py-3">
+  <div class="flex items-center gap-3">
+    <label class="text-lg font-bold text-gray-800">Select Time Zone:</label>
+    <select
+      class="text-lg font-semibold border-2 border-blue-400 rounded-xl px-4 py-2 bg-white shadow focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-200">
+      <option value="Select Zone">Select Zone</option>
+      <option value="apac">APAC</option>
+      <option value="emea">EMEA</option>
+      <option value="amer">AMER</option>
+    </select>
+  </div>
+
+  <div class="flex items-center gap-4 p-3 bg-gray-100 rounded-lg max-w-fit">
+    <mat-form-field>
+      <mat-label>Start Date</mat-label>
+      <input matInput [matDatepicker]="startPicker" [(ngModel)]="startDate" (dateChange)="applyFilter()">
+      <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>End Date</mat-label>
+      <input matInput [matDatepicker]="endPicker" [(ngModel)]="endDate" (dateChange)="applyFilter()">
+      <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+
+    <button mat-raised-button (click)="applyFilter()"
+      class="bg-blue-500 hover:bg-blue-600 text-white rounded-full h-10 px-5 text-sm shadow-md transition-colors duration-200">
+      Apply Filter
+    </button>
+  </div>
+</div>

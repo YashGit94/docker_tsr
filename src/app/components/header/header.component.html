@@ -1,0 +1,37 @@
+<header class="bg-white shadow px-4 py-2 flex items-center" style="display: flex; align-items: center;">
+
+  <div class="header-left">
+    <h1 class="text-2xl font-bold text-blue-600 flex-shrink-0">Elevate 360° - My Performance Dashboard</h1>
+  </div>
+
+  <div class="flex justify-center" style="flex: 1 1 0; display: flex; justify-content: center;">
+    <div class="flex items-center gap-2">
+      <label for="premiumFilter" class="text-lg font-bold text-gray-800">Business Line:</label>
+      <select id="premiumFilter"
+        class="text-lg font-semibold border-2 border-blue-400 rounded-xl px-4 py-2 bg-white shadow focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all duration-200"
+        [(ngModel)]="selectedBusinessline" (change)="onBusinessLineChange()">
+        <option value="Select">Select</option>
+        <option value="GCP Tech Premium">GCP Tech Premium</option>
+        <option value="GCP Tech Non-Premium">GCP Tech Non-Premium</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="header-right" style="flex: 1 1 0; display: flex; justify-content: flex-end;">
+   
+      <!-- Optional right section like avatar or menu -->
+      <div class="flex items-center space-x-4">
+
+        <div class="notification-container">
+          <button (click)="toggleNotification()" class="bell-button">
+            <span class="icon-wrapper">
+              <i class="fa-solid fa-bell"></i>
+              <div *ngIf="!showNotification" class="notification-badge"></div>
+            </span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  
+</header>

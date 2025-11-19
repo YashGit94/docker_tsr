@@ -1,4 +1,4 @@
-.clickable {
+/* .clickable {
   cursor: pointer;
 }
 
@@ -13,7 +13,7 @@ margin-bottom: 10px;
 }
 
 .header-left h1 {
-color: #3b82f6; /* Tailwind blue-600 */
+color: #3b82f6; Tailwind blue-600
     font-size: 1.5rem;
     font-weight: bold;
 } 
@@ -79,9 +79,9 @@ button img:hover {
   opacity: 1;
   pointer-events: auto;
   transform: scale(1);
-}
+} */
 
-.banner {
+/* .banner {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -183,7 +183,7 @@ button img:hover {
   margin-top: 2px;
   text-align: center;
   white-space: nowrap;
-}
+} */
 
 .card.performance {
   padding: 24px;
@@ -358,7 +358,7 @@ button img:hover {
 .key-btn:hover {
   background: #174ea6;
 }
-  .banner h2 {
+  /* .banner h2 {
   font-size: 1.25rem; 
   font-weight: 600;   
   margin-bottom: 0.5rem; 
@@ -378,15 +378,15 @@ button img:hover {
 
 .banner p.text-blue-100 {
   color: #dbeafe; 
-}
-.content-grid {
+} */
+
+/* .content-grid {
   display: flex;
   gap: 24px;
   margin: 20px;
   align-items: flex-start;
 }
 
-/* Main column takes more space */
 .main-column {
   flex: 2 1 0;
   display: flex;
@@ -394,7 +394,6 @@ button img:hover {
   gap: 24px;
 }
 
-/* Right column is narrower and stacks cards */
 .right-column {
   flex: 1 1 0;
   display: flex;
@@ -418,13 +417,13 @@ button img:hover {
 .card h4 {
   font-size: 18px;
   font-weight: bold;
-  margin-top: 0.5rem;   /* Add or reduce this value */
-  margin-bottom: 10px;  /* Adjust as needed */
+  margin-top: 0.5rem;   
+  margin-bottom: 10px;  
 }
 
 .section-title {
   font-weight: 600;
-  margin: 8px 0 8px 0;  /* Reduce top margin from 18px to 8px */
+  margin: 8px 0 8px 0;  
   font-size: 1.05rem;
 }
   
@@ -519,9 +518,9 @@ button img:hover {
 }
 .metric-link:hover {
   color: #174ea6;
-}
+} */
 
-  .card.learning-journey {
+  /* .card.learning-journey {
   padding: 24px;
   background: #fff;
   border-radius: 12px;
@@ -581,13 +580,13 @@ button img:hover {
   font-weight: 600;
 }
 .h-2 {
-    height: 0.5rem; /* or 8px */
+    height: 0.5rem; 
 }
 .status.completed {
   color: #16a34a;
-}
+} */
 
-.icon-wrapper {
+/* .icon-wrapper {
     position: relative;
     display: inline-block;
     line-height: 1;
@@ -658,6 +657,10 @@ button img:hover {
     border-right: 10px solid transparent;
     border-bottom: 10px solid #ffffff;
     z-index: 1001;
+} */
+
+/* .status.completed {
+  color: #22c55e;
 }
 .status.pending {
   color: #eab308;
@@ -751,7 +754,7 @@ button img:hover {
 .card.leaderboard,
 .card.learning-leaderboard,
 .card.todo-card {
-  padding: 12px; /* reduced from 24px */
+  padding: 12px; 
 }
 .leaderboard-header {
   display: flex;
@@ -844,10 +847,10 @@ button img:hover {
 }
 .todo-btn:hover {
   background: #e0eaff;
-}
+} */
 
 /* Modal overlay and card */
-.modal-overlay {
+/* .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.15);
@@ -859,11 +862,11 @@ button img:hover {
 
 .modal-card {
   background: #fff;
-  border-radius: 16px;
+  border-radius: 8px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-  /* padding: 32px 36px 28px 36px; */
-  padding-top: 1rem;
-  min-width: 370px;
+  font-size: 1.2rem;
+  padding: 1.5rem;
+  min-width: 350px;
   max-width: 95vw;
   font-family: 'Segoe UI', Arial, sans-serif;
 }
@@ -877,9 +880,9 @@ button img:hover {
   transition: color 0.2s;
   margin-left: 12px;
 }
-.modal-close:hover { color: #1e40af; }
+.modal-close:hover { color: #1e40af; } */
 
-.text-xl {
+/* .text-xl {
   font-size: 1.35rem;
   font-weight: 700;
   color: #1746a2;
@@ -980,8 +983,8 @@ cubic-bezier(0.4, 0, 0.2, 1);
 }
 .rounded-xl {
     border-radius: .75rem;
-}
-button, input, optgroup, select, textarea {
+} */
+/* button, input, optgroup, select, textarea {
     padding: 0;
     line-height: inherit;
     color: inherit;
@@ -994,9 +997,9 @@ button, input, optgroup, select, textarea {
     font-size: 100%;
     line-height: 1.15;
     margin: 0;
-}
+} */
 
-.font-bold {
+/* .font-bold {
     font-weight: 700;
 }
 .text-lg {
@@ -1036,13 +1039,9 @@ cubic-bezier(0.4, 0, 0.2, 1);
 }
 .h-10 {
     height: 2.5rem;
-}
-button, input, optgroup, select, textarea {
-    padding: 0;
-    line-height: inherit;
-    color: inherit;
-}
-[role=button], button {
+} */
+
+/* [role=button], button {
     cursor: pointer;
 }
 button {
@@ -1051,18 +1050,11 @@ button {
 }
 [type=button], [type=reset], [type=submit], button {
     -webkit-appearance: button;
-}
-button, select {
-    text-transform: none;
-}
-button, input, optgroup, select, textarea {
-    font-family: inherit;
-    font-size: 100%;
-    line-height: 1.15;
-    margin: 0;
-}
+}  */
 
-.modal-card span, .modal-card div {
+
+
+/* .modal-card span, .modal-card div {
   font-size: 1.01rem;
 }
 
@@ -1093,7 +1085,6 @@ button, input, optgroup, select, textarea {
 }
 
 .modal-card .text-blue-600.font-semibold {
-  /* text-decoration: underline; */
   cursor: pointer;
 }
 
@@ -1108,7 +1099,7 @@ button, input, optgroup, select, textarea {
   margin-top: 0.18rem;
 }
 
-/* Numbered list style for Well Handled Cases */
+Numbered list style for Well Handled Cases
 .modal-card .text-black-600.flex-col > div {
   display: flex;
   align-items: flex-start;
@@ -1120,17 +1111,17 @@ button, input, optgroup, select, textarea {
   margin-right: 0.2rem;
 }
 
-/* Remove default list styles if any */
+Remove default list styles if any
 .modal-card ul, .modal-card ol {
   list-style: none;
   padding: 0;
   margin: 0;
-}
+} */
 
 
 
 /* Fix for calendar filter Material fields */
-.custom-white-input.mat-mdc-form-field-appearance-fill .mat-mdc-text-field-wrapper {
+/* .custom-white-input.mat-mdc-form-field-appearance-fill .mat-mdc-text-field-wrapper {
   background-color: #fff !important;
   border-radius: 8px !important;
   border: 1px solid #d0d0d0 !important;
@@ -1187,11 +1178,11 @@ button, input, optgroup, select, textarea {
 .custom-white-input .mat-mdc-form-field-subscript-wrapper {
   height: 0 !important;
   overflow: hidden !important;
-}
+} */
 
-.profile-icon {
+/* .profile-icon {
   font-size: 38px; 
 }
 .ttp-header{
 padding-bottom: 8px;
-}
+} */

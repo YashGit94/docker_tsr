@@ -8,7 +8,6 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "start-backend": "node src/index.js"
-
   },
   "private": true,
   "dependencies": {
@@ -21,13 +20,14 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
-    "@fortawesome/angular-fontawesome": "^3.0.0",
+    "@fortawesome/angular-fontawesome": "^1.0.0",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "@google-cloud/bigquery": "^8.1.1",
+    "@tailwindcss/postcss": "^4.1.17",
     "@types/chart.js": "^2.9.41",
     "canvas-confetti": "^1.9.3",
-    "chart.js": "^4.5.0",
+    "chart.js": "^4.5.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "ng2-charts": "^4.1.1",
