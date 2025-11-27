@@ -596,9 +596,9 @@ button {
     cursor: pointer;
 
 }
-[type=button], [type=reset], [type=submit], button {
+/* [type=button], [type=reset], [type=submit], button {
     -webkit-appearance: button;
-}
+} */
 
 .profile-icon {
   font-size: 38px; 
