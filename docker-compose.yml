@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # --- 1. Frontend Service (Angular/Nginx) ---
+  frontend:
+    # Builds using the Dockerfile-frontend in the current directory
+    build:
+      context: .
+      dockerfile: Dockerfile-frontend
+    container_name: angular-frontend
+    # Exposes Nginx port 80 publicly
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+
+  # --- 2. Backend Service (Node.js API) ---
+  backend:
+    # Builds using the Dockerfile-backend in the current directory
+    build:
+      context: .
+      dockerfile: Dockerfile-backend
+    container_name: api-backend
+    # Exposes Node.js port 3000 publicly
+    ports:
+      - "3000:3000"
+    # Ensures the frontend container is ready before the backend starts
+    depends_on:
+      - frontend 
+    networks:
+      - app-network
+    # Environment variable for internal network usage (optional, but configured for consistency)
+    environment:
+      API_URL: http://backend:3000/api/v1/ 
+      GCP_SERVICE_ACCOUNT_KEY: ${GCP_SERVICE_ACCOUNT_KEY}
+
+# Define a custom network for inter-service communication
+networks:
+  app-network:
+    driver: bridge
