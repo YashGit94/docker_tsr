@@ -1,21 +1,22 @@
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import {
   NotificationItem,
   NotificationService,
-} from "../../services/notification-service";
+} from '../../services/notification-service';
+import { TimeAgoPipe } from './timeago';
 
 @Component({
-  selector: "app-notifications",
+  selector: 'app-notifications',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: "/notifications.component.html",
-  styleUrls: ["./notifications.component.css"],
+  imports: [CommonModule, TimeAgoPipe],
+  templateUrl: '/notifications.component.html',
+  styleUrls: ['./notifications.component.css'],
 })
 export class NotificationsComponent implements OnInit {
   all: NotificationItem[] = [];
   loading = false;
-
+  now = new Date();
   // Configuration
   initialCount = 2; // Initially show only 2
   showAll = false; // State to track if list is expanded

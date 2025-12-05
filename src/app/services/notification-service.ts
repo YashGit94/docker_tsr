@@ -9,6 +9,7 @@ export interface NotificationItem {
   title: string;
   body: string;
   time?: number;
+  dateVal:Date;
 }
 
 @Injectable({ providedIn: "root" })
