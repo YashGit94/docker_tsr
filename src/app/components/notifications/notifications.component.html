@@ -1,0 +1,41 @@
+<div class="dropdown-card">
+  <div class="dropdown-header">
+    <span class="header-title">Notifications</span>
+    <span class="count-badge" *ngIf="all.length">{{ all.length }}</span>
+  </div>
+
+  <div class="dropdown-body">
+    <div *ngIf="loading" class="state-msg">
+      <div class="spinner"></div>
+    </div>
+
+    <div *ngIf="!loading && all.length === 0" class="state-msg">
+      <p>You are all caught up!</p>
+    </div>
+
+    <!-- Logic: If showAll is true, slice to length, otherwise slice to initialCount -->
+    <ul *ngIf="!loading && all.length > 0" class="notif-list">
+      <li
+        *ngFor="
+          let n of all | slice : 0 : (showAll ? all.length : initialCount)
+        "
+        class="notif-item"
+      >
+        <div class="notif-icon">
+          <i class="fa-solid fa-bell"></i>
+        </div>
+        <div class="notif-content">
+          <div class="n-title">{{ n.title }}</div>
+          <div class="n-time">{{ n.time | date : "short" }}</div>
+          <!-- <div class="n-time">{{ n.dateVal | timeAgo }}</div> -->
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="dropdown-footer" *ngIf="all.length > initialCount">
+    <button class="see-all-btn" (click)="toggleView()">
+      {{ showAll ? "Show Less" : "See all activity" }}
+    </button>
+  </div>
+</div>

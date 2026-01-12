@@ -73,4 +73,8 @@ app.get('/api/mounika', async (req, res) => {
 
 
 const port = process.env.PORT || 3000;
+<<<<<<< HEAD
 app.listen(port, () => console.log(`backend listening on ${port}`));
+=======
+app.listen(port, () => console.log(`backend listening on ${port}`));
+>>>>>>> upstream/develop

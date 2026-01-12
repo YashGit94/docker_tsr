@@ -23,12 +23,15 @@
       <div class="flex items-center space-x-4">
 
         <div class="notification-container">
-          <button (click)="toggleNotification()" class="bell-button">
+          <button (click)="toggleNotification($event)" class="bell-button">
             <span class="icon-wrapper">
               <i class="fa-solid fa-bell"></i>
               <div *ngIf="!showNotification" class="notification-badge"></div>
             </span>
           </button>
+            <div *ngIf="showNotification" class="notification-dropdown-wrapper">
+              <app-notifications (close)="closeNotification()"></app-notifications>
+            </div>
         </div>
 
       </div>
