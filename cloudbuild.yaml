@@ -1,18 +1,16 @@
 steps:
-  # 1. Build the Docker image using the injected variables
+  # The -f flag must point to the variable, not a hardcoded "Dockerfile"
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'build', 
-      '-t', 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:$COMMIT_SHA',
+      '-t', 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:$COMMIT_SHA', 
       '-f', '${_DOCKERFILE_PATH}', 
       '.'
     ]
 
-  # 2. Push the image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/${_IMAGE_NAME}:$COMMIT_SHA']
 
-  # 3. Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -27,11 +25,10 @@ steps:
       - 'managed'
       - '--allow-unauthenticated'
 
-# Required to fix the service account logging error
 options:
   logging: CLOUD_LOGGING_ONLY
 
 substitutions:
-  _DOCKERFILE_PATH: 'Dockerfile'
+  _DOCKERFILE_PATH: 'Dockerfile' # Default value
   _IMAGE_NAME: 'default-image'
   _SERVICE_NAME: 'default-service'
