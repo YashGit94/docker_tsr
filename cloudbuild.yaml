@@ -1,26 +1,75 @@
+# steps:
+#   # Step 1: Build the Backend Image
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: [
+#       'build', 
+#       '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/api-backend:latest', 
+#       '-f', 'Dockerfile-backend', 
+#       '.'
+#     ]
+
+#   # Step 2: Build the Frontend Image
+#   - name: 'gcr.io/cloud-builders/docker'
+#     args: [
+#       'build', 
+#       '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/angular-frontend:latest', 
+#       '-f', 'Dockerfile-frontend', 
+#       '.'
+#     ]
+
+# # Step 3: Push images to Artifact Registry
+# images:
+#   - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/api-backend:latest'
+#   - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/angular-frontend:latest'
+# # --- CLOUD LOGGING CONFIGURATION ---
+# options:
+#   logging: CLOUD_LOGGING_ONLY  # Options: LEGACY, GCS_ONLY, STACKDRIVER, CLOUD_LOGGING_ONLY, NONE
+
+
+
 steps:
-  # Step 1: Build the Backend Image
+  # 1. Build and Push Backend Image
   - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'build', 
-      '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/api-backend:latest', 
-      '-f', 'Dockerfile-backend', 
-      '.'
-    ]
+    id: 'build-backend'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/api-backend:latest', '-f', 'Dockerfile-backend', '.']
 
-  # Step 2: Build the Frontend Image
+  # 2. Build and Push Frontend Image
   - name: 'gcr.io/cloud-builders/docker'
-    args: [
-      'build', 
-      '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/angular-frontend:latest', 
-      '-f', 'Dockerfile-frontend', 
-      '.'
-    ]
+    id: 'build-frontend'
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/angular-frontend:latest', '-f', 'Dockerfile-frontend', '.']
 
-# Step 3: Push images to Artifact Registry
+  # 3. Deploy Backend to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-backend'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'api-backend'
+      - '--image=us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/api-backend:latest'
+      - '--region=us-central1'
+      - '--platform=managed'
+      - '--port=3000'
+      - '--set-env-vars=GCP_SERVICE_ACCOUNT_KEY=${_GCP_SERVICE_ACCOUNT_KEY}'
+      - '--allow-unauthenticated'
+
+  # 4. Deploy Frontend to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    id: 'deploy-frontend'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'angular-frontend'
+      - '--image=us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/angular-frontend:latest'
+      - '--region=us-central1'
+      - '--platform=managed'
+      - '--port=80'
+      - '--allow-unauthenticated'
+
 images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/api-backend:latest'
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/angular-frontend:latest'
-# --- CLOUD LOGGING CONFIGURATION ---
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/api-backend:latest'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/angular-frontend:latest'
+
 options:
-  logging: CLOUD_LOGGING_ONLY  # Options: LEGACY, GCS_ONLY, STACKDRIVER, CLOUD_LOGGING_ONLY, NONE
+  logging: CLOUD_LOGGING_ONLY
