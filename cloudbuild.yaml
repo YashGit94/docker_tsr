@@ -19,8 +19,8 @@ steps:
 
 # Step 3: Push images to Artifact Registry
 images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/api-backend:latest'
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/angular-frontend:latest'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/api-backend:latest'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/angular-frontend:latest'
 # --- CLOUD LOGGING CONFIGURATION ---
 options:
   logging: CLOUD_LOGGING_ONLY  # Options: LEGACY, GCS_ONLY, STACKDRIVER, CLOUD_LOGGING_ONLY, NONE
