@@ -73,5 +73,8 @@ app.get('/api/mounika', async (req, res) => {
 });
 
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`backend listening on ${port}`));
+// Remove the hardcoded const PORT = 3001; 
+// Use the dynamic port throughout the file
+const port = process.env.PORT || 8080;
+// Explicitly bind to 0.0.0.0
+app.listen(port, '0.0.0.0', () => console.log(`backend listening on ${port}`));
