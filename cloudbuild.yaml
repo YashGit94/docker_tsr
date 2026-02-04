@@ -3,7 +3,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'build', 
-      '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/api-backend:latest', 
+      '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/api-backend:latest', 
       '-f', 'Dockerfile-backend', 
       '.'
     ]
@@ -12,7 +12,7 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'build', 
-      '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/angular-frontend:latest', 
+      '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/angular-frontend:latest', 
       '-f', 'Dockerfile-frontend', 
       '.'
     ]
