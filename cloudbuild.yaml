@@ -31,12 +31,12 @@ steps:
   # 1. Build and Push Backend Image
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build-backend'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/api-backend:latest', '-f', 'Dockerfile-backend', '.']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/api-backend:latest', '-f', 'Dockerfile-backend', '.']
 
   # 2. Build and Push Frontend Image
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build-frontend'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/angular-frontend:latest', '-f', 'Dockerfile-frontend', '.']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/angular-frontend:latest', '-f', 'Dockerfile-frontend', '.']
 
   # 3. Deploy Backend to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -46,7 +46,7 @@ steps:
       - 'run'
       - 'deploy'
       - 'api-backend'
-      - '--image=us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/api-backend:latest'
+      - '--image=us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/api-backend:latest'
       - '--region=us-central1'
       - '--platform=managed'
       - '--port=3000'
@@ -61,15 +61,15 @@ steps:
       - 'run'
       - 'deploy'
       - 'angular-frontend'
-      - '--image=us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/angular-frontend:latest'
+      - '--image=us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/angular-frontend:latest'
       - '--region=us-central1'
       - '--platform=managed'
       - '--port=80'
       - '--allow-unauthenticated'
 
 images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/api-backend:latest'
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/elevate-repo/angular-frontend:latest'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/api-backend:latest'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/my-repo/angular-frontend:latest'
 
 options:
   logging: CLOUD_LOGGING_ONLY
