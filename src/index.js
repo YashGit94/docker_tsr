@@ -16,8 +16,8 @@ app.use(bodyParser.json());
 const bigquery = new BigQuery({
   // CRITICAL: JSON.parse converts the environment string back into a JavaScript object
   credentials: JSON.parse(process.env.GCP_SERVICE_ACCOUNT_KEY),
-  projectId: 'elevate360-poc',
-  scopes: SCOPES,
+  projectId: 'elevate360-poc',
+  scopes: SCOPES,
 });
 // returns one row for Mounika (adjust LIKE if full name differs)
 
@@ -73,8 +73,5 @@ app.get('/api/mounika', async (req, res) => {
 });
 
 
-// Remove the hardcoded const PORT = 3001; 
-// Use the dynamic port throughout the file
-const port = process.env.PORT || 8080;
-// Explicitly bind to 0.0.0.0
-app.listen(port, '0.0.0.0', () => console.log(`backend listening on ${port}`));
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`backend listening on ${port}`));
