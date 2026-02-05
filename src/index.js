@@ -7,13 +7,16 @@ const SCOPES = [
   'https://www.googleapis.com/auth/bigquery',
   'https://www.googleapis.com/auth/drive.readonly'
 ];
+
 const app = express();
+
+// FIX: Always prioritize process.env.PORT for Cloud Run compatibility
+const port = process.env.PORT || 8080; 
 
 app.use(cors());
 app.use(bodyParser.json());
 
 const bigquery = new BigQuery({
-  // JSON.parse converts the environment string back into a JavaScript object
   credentials: JSON.parse(process.env.GCP_SERVICE_ACCOUNT_KEY),
   projectId: 'elevate360-poc',
   scopes: SCOPES,
@@ -64,6 +67,7 @@ app.get('/api/mounika', async (req, res) => {
   }
 });
 
-// IMPORTANT: Cloud Run requires listening on process.env.PORT
-const port = process.env.PORT || 8080; 
-app.listen(port, () => console.log(`Backend listening on port ${port}`));
+// Start server on the correct dynamic port
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Backend listening on port ${port}`);
+});
