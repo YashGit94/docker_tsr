@@ -3,20 +3,14 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --silent
 COPY . .
+# Ensure production configuration and correct base-href
 RUN npm run build -- --configuration=production --base-href=/
 
-# === CRITICAL DEBUG STEP ===
-# This will print the contents of the 'dist' folder to the console.
-RUN ls -R /app/dist 
-# ===========================
-
+# Nginx stage
 FROM nginx:alpine
-
-# CRITICAL STEP: Copy the custom nginx.conf into the container
+# Copy custom nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# *** PLACEHOLDER: This line is still incorrect. We will fix it after debugging. ***
-# The correct path will be shown by the 'ls' command above.
+# Fix: Correctly reference the browser output directory
 COPY --from=frontend-build /app/dist/tsr/browser /usr/share/nginx/html
 
 EXPOSE 80
