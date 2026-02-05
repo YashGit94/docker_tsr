@@ -1,60 +1,33 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const { BigQuery } = require('@google-cloud/bigquery');
-
 const app = express();
-const port = process.env.PORT || 8080; 
 
-app.use(cors());
-app.use(bodyParser.json());
+// Cloud Run provides the port; we must use it and bind to 0.0.0.0
+const port = process.env.PORT || 8080;
 
-const bigquery = new BigQuery({
-  projectId: 'gudayaswanth-devops'
-});
-
-// Root health check for Cloud Run stability
+// Health Check Route (Required for Cloud Run to see the app is alive)
 app.get('/', (req, res) => {
-  res.status(200).send('Service is Up');
+  res.status(200).send('Backend is Up and Running!');
 });
 
-app.get('/api/mounika', async (req, res) => {
-  try {
-    const [metadata] = await bigquery
-      .dataset('metrics_vault_test')
-      .table('user_kpi_stats_test')
-      .getMetadata();
+// Mock Data Endpoint (Matches your frontend call)
+app.get('/api/mounika', (req, res) => {
+  console.log('Received request for Mounika data - Sending Sample Data');
+  
+  const sampleData = {
+    labels: [
+      "Security Command Center", 
+      "Cloud Asset Inventory", 
+      "VPC Service Controls", 
+      "Cloud Armor", 
+      "Binary Authorization", 
+      "Cloud Key Management Service"
+    ],
+    values: [85, 90, 75, 80, 95, 88]
+  };
 
-    const columnNames = metadata.schema.fields
-      .map(field => field.name)
-      .filter(name => name.toLowerCase() !== 'name');
-
-    const sql = `
-      SELECT ${columnNames.join(', ')}
-      FROM \`gudayaswanth-devops.metrics_vault_test.user_kpi_stats_test\`
-      WHERE LOWER(Name) LIKE '%mounika%'
-      LIMIT 1
-    `;
-
-    const [rows] = await bigquery.query({ query: sql, location: 'US' });
-    
-    if (!rows || rows.length === 0) {
-      return res.status(200).json({ labels: [], values: [] });
-    }
-
-    const row = rows[0];
-    const values = columnNames.map(col => Number(row[col] || 0));
-    const labels = columnNames.map(col => 
-      col.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-    );
-
-    res.json({ labels, values });
-  } catch (err) {
-    console.error('BigQuery Error:', err);
-    res.status(500).json({ error: 'Database query failed' });
-  }
+  res.json(sampleData);
 });
 
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Server running on port ${port}`);
+  console.log(`Test Backend listening on port ${port}`);
 });
