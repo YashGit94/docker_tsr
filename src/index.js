@@ -4,18 +4,20 @@ const cors = require('cors');
 const { BigQuery } = require('@google-cloud/bigquery');
 
 const app = express();
-const port = process.env.PORT || 8080; // Required for Cloud Run
+// Cloud Run assigns a port dynamically; defaulting to 8080 for health checks
+const port = process.env.PORT || 8080; 
 
 app.use(cors());
 app.use(bodyParser.json());
 
+// Initialize BigQuery for your specific project
 const bigquery = new BigQuery({
   projectId: 'gudayaswanth-devops'
 });
 
 app.get('/api/mounika', async (req, res) => {
   try {
-    // Graceful check for the test table structure
+    // 1. Fetch metadata from the NEW _test structure
     const [metadata] = await bigquery
       .dataset('metrics_vault_test')
       .table('user_kpi_stats_test')
@@ -25,6 +27,7 @@ app.get('/api/mounika', async (req, res) => {
       .map(field => field.name)
       .filter(name => name.toLowerCase() !== 'name');
 
+    // 2. Query for the specific test record
     const sql = `
       SELECT ${columnNames.join(', ')}
       FROM \`gudayaswanth-devops.metrics_vault_test.user_kpi_stats_test\`
@@ -39,6 +42,8 @@ app.get('/api/mounika', async (req, res) => {
     }
 
     const row = rows[0];
+
+    // 3. Map values and labels for the frontend logic
     const values = columnNames.map(col => Number(row[col] || 0));
     const labels = columnNames.map(col => 
       col.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
@@ -47,13 +52,12 @@ app.get('/api/mounika', async (req, res) => {
     res.json({ labels, values });
 
   } catch (err) {
-    console.warn('BigQuery skip/error:', err.message);
-    // Return empty success to prevent frontend crash during initial setup
-    res.json({ labels: [], values: [], error: 'Table setup pending' });
+    console.error('BigQuery error:', err);
+    res.status(500).json({ error: err.message });
   }
 });
 
-// CRITICAL FIX: Explicitly bind to 0.0.0.0 to satisfy Cloud Run health checks
+// Mandatory: Bind to 0.0.0.0 for Cloud Run accessibility
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Backend service listening on port ${port}`);
+  console.log(`Backend listening on port ${port}`);
 });
