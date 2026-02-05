@@ -20,45 +20,7 @@
 #   logging: CLOUD_LOGGING_ONLY
 
 steps:
-  # ==========================================================
-  # BACKEND SERVICE DEPLOYMENT
-  # ==========================================================
-
-  # Step 1: Build the Backend Docker Image
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'Build Backend'
-    args: [
-      'build', 
-      '-t', 'gcr.io/$PROJECT_ID/backend-service-test', 
-      '-f', 'Dockerfile-backend', 
-      '.'
-    ]
-
-  # Step 2: Push the Backend Image to Container Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    id: 'Push Backend'
-    args: ['push', 'gcr.io/$PROJECT_ID/backend-service-test']
-
-  # Step 3: Deploy Backend to Cloud Run
-  # We use the --port=8080 flag to ensure the health check matches our code
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    id: 'Deploy Backend'
-    entrypoint: gcloud
-    args:
-      - 'run'
-      - 'deploy'
-      - 'backend-service-test'
-      - '--image=gcr.io/$PROJECT_ID/backend-service-test'
-      - '--region=us-central1'
-      - '--platform=managed'
-      - '--port=8080'
-      - '--allow-unauthenticated'
-
-  # ==========================================================
-  # FRONTEND SERVICE DEPLOYMENT
-  # ==========================================================
-
-  # Step 4: Build the Frontend Docker Image
+  # Step 1: Build the Frontend Image
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Build Frontend'
     args: [
@@ -68,12 +30,12 @@ steps:
       '.'
     ]
 
-  # Step 5: Push the Frontend Image
+  # Step 2: Push the Frontend Image
   - name: 'gcr.io/cloud-builders/docker'
     id: 'Push Frontend'
     args: ['push', 'gcr.io/$PROJECT_ID/frontend-service-test']
 
-  # Step 6: Deploy Frontend to Cloud Run
+  # Step 3: Deploy Frontend to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     id: 'Deploy Frontend'
     entrypoint: gcloud
@@ -86,13 +48,8 @@ steps:
       - '--platform=managed'
       - '--allow-unauthenticated'
 
-# Images to be stored in the Registry
 images:
-  - 'gcr.io/$PROJECT_ID/backend-service-test'
   - 'gcr.io/$PROJECT_ID/frontend-service-test'
-
-# Set a longer timeout (15 mins) just in case BigQuery cold-starts take time
-timeout: '900s'
 
 
 options:
