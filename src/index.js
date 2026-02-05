@@ -10,17 +10,19 @@ const SCOPES = [
 
 const app = express();
 
-/**
- * FIX: Cloud Run dynamically assigns a port via the PORT environment variable.
- * Your container must listen on this port. We default to 8080 for local testing.
- */
+// Cloud Run dynamically assigns a port via the PORT environment variable.
+// We bind to 0.0.0.0 to ensure the container is reachable by the proxy.
 const port = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(bodyParser.json());
 
+/**
+ * FIX: No local keys required. 
+ * By leaving the configuration object mostly empty, the library 
+ * automatically uses the Cloud Run Service Account's identity.
+ */
 const bigquery = new BigQuery({
-  credentials: JSON.parse(process.env.GCP_SERVICE_ACCOUNT_KEY),
   projectId: 'elevate360-poc',
   scopes: SCOPES,
 });
@@ -70,10 +72,6 @@ app.get('/api/mounika', async (req, res) => {
   }
 });
 
-/**
- * FIX: You must listen on '0.0.0.0' to ensure the container 
- * can receive traffic from the Cloud Run proxy.
- */
 app.listen(port, '0.0.0.0', () => {
   console.log(`Backend listening on port ${port}`);
 });
