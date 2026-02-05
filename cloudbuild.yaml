@@ -68,3 +68,6 @@ steps:
 images:
   - 'gcr.io/$PROJECT_ID/api-backend'
   - 'gcr.io/$PROJECT_ID/angular-frontend'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
