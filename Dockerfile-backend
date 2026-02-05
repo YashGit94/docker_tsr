@@ -1,16 +1,7 @@
 FROM node:18-slim
-
 WORKDIR /app
-
-# Install dependencies first for faster builds
 COPY package*.json ./
-RUN npm install --only=production
-
-# Copy the rest of the code
+RUN npm install
 COPY . .
-
-# Cloud Run expects 8080
 EXPOSE 8080
-
-# Start the app
-CMD [ "node", "src/index.js" ]
+CMD ["node", "src/index.js"]
