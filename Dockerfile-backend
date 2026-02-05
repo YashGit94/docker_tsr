@@ -1,21 +1,16 @@
-# Use a slim Node.js image to keep the container lightweight
 FROM node:18-slim
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy package files first to leverage Docker layer caching
+# Install dependencies first for faster builds
 COPY package*.json ./
-
-# Install production dependencies only
 RUN npm install --only=production
 
-# Copy the rest of the source code (specifically src/)
+# Copy the rest of the code
 COPY . .
 
-# Cloud Run injects the PORT environment variable.
-# We document that the app listens on 8080.
+# Cloud Run expects 8080
 EXPOSE 8080
 
-# Use 'node' to start the application directly
+# Start the app
 CMD [ "node", "src/index.js" ]
