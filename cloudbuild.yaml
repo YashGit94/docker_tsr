@@ -45,7 +45,7 @@ steps:
       - '--platform=managed'
       - '--port=8080'
       - '--allow-unauthenticated'
-      - '--set-env-vars=GCP_SERVICE_ACCOUNT_KEY=${_GCP_SERVICE_ACCOUNT_KEY}'
+      # - '--set-env-vars=GCP_SERVICE_ACCOUNT_KEY=${_GCP_SERVICE_ACCOUNT_KEY}'
 
   # 4. Deploy Frontend to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
