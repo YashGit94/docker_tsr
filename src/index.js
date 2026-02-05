@@ -4,13 +4,15 @@ const cors = require('cors');
 const { BigQuery } = require('@google-cloud/bigquery');
 
 const app = express();
-// Cloud Run dynamically assigns a port; default to 8080 for local testing
-const port = process.env.PORT || 8080; 
+
+// FIX: Cloud Run dynamically assigns a port via the PORT environment variable.
+// We default to 8080 for local testing but MUST use process.env.PORT for Cloud Run.
+const port = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(bodyParser.json());
 
-// Initialize BigQuery using the identity of the Cloud Run Service Account
+// Initialize BigQuery using the Cloud Run Service Account Identity for gudayaswanth-devops
 const bigquery = new BigQuery({
   projectId: 'gudayaswanth-devops'
 });
@@ -27,7 +29,7 @@ app.get('/api/mounika', async (req, res) => {
       .map(field => field.name)
       .filter(name => name.toLowerCase() !== 'name');
 
-    // 2. Query for the specific record in the test table
+    // 2. Query for the record in the test table
     const sql = `
       SELECT ${columnNames.join(', ')}
       FROM \`gudayaswanth-devops.metrics_vault_test.user_kpi_stats_test\`
@@ -43,7 +45,7 @@ app.get('/api/mounika', async (req, res) => {
 
     const row = rows[0];
 
-    // 3. Format values and labels for the Angular frontend
+    // 3. Format values and labels for the frontend
     const values = columnNames.map(col => {
       const val = row[col];
       return val === null || val === undefined ? 0 : Number(val);
@@ -65,7 +67,7 @@ app.get('/api/mounika', async (req, res) => {
   }
 });
 
-// Explicitly listen on 0.0.0.0 for Cloud Run accessibility
+// FIX: Bind to '0.0.0.0' to ensure the container is reachable by the Cloud Run proxy.
 app.listen(port, '0.0.0.0', () => {
   console.log(`Backend listening on port ${port}`);
 });
