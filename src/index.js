@@ -4,17 +4,18 @@ const cors = require('cors');
 const { BigQuery } = require('@google-cloud/bigquery');
 
 const app = express();
-
-/** * CRITICAL FIX 1: Use process.env.PORT. 
- * Cloud Run injects this variable. Defaulting to 8080 for local safety.
- */
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8080; 
 
 app.use(cors());
 app.use(bodyParser.json());
 
 const bigquery = new BigQuery({
   projectId: 'gudayaswanth-devops'
+});
+
+// Root health check for Cloud Run stability
+app.get('/', (req, res) => {
+  res.status(200).send('Service is Up');
 });
 
 app.get('/api/mounika', async (req, res) => {
@@ -38,7 +39,7 @@ app.get('/api/mounika', async (req, res) => {
     const [rows] = await bigquery.query({ query: sql, location: 'US' });
     
     if (!rows || rows.length === 0) {
-      return res.status(200).json({ labels: [], values: [], message: 'No data' });
+      return res.status(200).json({ labels: [], values: [] });
     }
 
     const row = rows[0];
@@ -50,13 +51,10 @@ app.get('/api/mounika', async (req, res) => {
     res.json({ labels, values });
   } catch (err) {
     console.error('BigQuery Error:', err);
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Database query failed' });
   }
 });
 
-/** * CRITICAL FIX 2: Bind to '0.0.0.0'.
- * Listening on 'localhost' inside a container makes it unreachable from outside.
- */
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Backend is live on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });
