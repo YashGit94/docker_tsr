@@ -40,15 +40,11 @@ steps:
       - 'run'
       - 'deploy'
       - 'backend-service'
-      - '--image'
-      - 'gcr.io/$PROJECT_ID/api-backend'
-      - '--region'
-      - '[REGION]'
-      - '--platform'
-      - 'managed'
+      - '--image=gcr.io/$PROJECT_ID/api-backend'
+      - '--region=us-central1'
+      - '--platform=managed'
       - '--allow-unauthenticated'
-      - '--set-env-vars'
-      - 'GCP_SERVICE_ACCOUNT_KEY=${_GCP_SERVICE_ACCOUNT_KEY}'
+      - '--set-env-vars=GCP_SERVICE_ACCOUNT_KEY=${_GCP_SERVICE_ACCOUNT_KEY}'
 
   # 4. Deploy Frontend to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -57,17 +53,17 @@ steps:
       - 'run'
       - 'deploy'
       - 'frontend-service'
-      - '--image'
-      - 'gcr.io/$PROJECT_ID/angular-frontend'
-      - '--region'
-      - 'us-central1'
-      - '--platform'
-      - 'managed'
+      - '--image=gcr.io/$PROJECT_ID/angular-frontend'
+      - '--region=us-central1'
+      - '--platform=managed'
       - '--allow-unauthenticated'
 
 images:
   - 'gcr.io/$PROJECT_ID/api-backend'
   - 'gcr.io/$PROJECT_ID/angular-frontend'
+
+substitutions:
+  _GCP_SERVICE_ACCOUNT_KEY: 'DEFAULT_VALUE_REPLACE_DURING_SUBMIT'
 
 options:
   logging: CLOUD_LOGGING_ONLY
