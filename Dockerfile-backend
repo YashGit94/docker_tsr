@@ -1,15 +1,14 @@
 FROM node:lts-alpine
 WORKDIR /app
 
-# 1. Install dependencies (only production dependencies for running the server)
-COPY package.json package-lock.json ./
-RUN npm install --silent
+# Install production dependencies only
+COPY package*.json ./
+RUN npm install --production --silent
 
-# 2. Copy all source code (including your src/index.js and keys file)
+# Copy source code
 COPY . .
 
-# Your backend port (3000 in the compose file)
+# Match the port used in index.js and docker-compose
 EXPOSE 3000
 
-# Command to start your backend. Note the path to index.js
 CMD ["node", "src/index.js"]
