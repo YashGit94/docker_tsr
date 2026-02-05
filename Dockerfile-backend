@@ -1,14 +1,21 @@
-FROM node:lts-alpine
+# Use a slim Node.js image to keep the container lightweight
+FROM node:18-slim
+
+# Set the working directory inside the container
 WORKDIR /app
 
-# Install production dependencies only
+# Copy package files first to leverage Docker layer caching
 COPY package*.json ./
-RUN npm install --production --silent
 
-# Copy source code
+# Install production dependencies only
+RUN npm install --only=production
+
+# Copy the rest of the source code (specifically src/)
 COPY . .
 
-# Match the port used in index.js and docker-compose
-EXPOSE 3000
+# Cloud Run injects the PORT environment variable.
+# We document that the app listens on 8080.
+EXPOSE 8080
 
-CMD ["node", "src/index.js"]
+# Use 'node' to start the application directly
+CMD [ "node", "src/index.js" ]
