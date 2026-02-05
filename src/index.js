@@ -10,13 +10,15 @@ const SCOPES = [
 
 const app = express();
 
-// FIX: Always prioritize process.env.PORT for Cloud Run compatibility
-const port = process.env.PORT || 8080; 
+// Cloud Run provides the port via the PORT environment variable.
+// Default to 8080 if not provided.
+const port = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(bodyParser.json());
 
 const bigquery = new BigQuery({
+  // Converts the environment string back into a JavaScript object
   credentials: JSON.parse(process.env.GCP_SERVICE_ACCOUNT_KEY),
   projectId: 'elevate360-poc',
   scopes: SCOPES,
@@ -67,7 +69,7 @@ app.get('/api/mounika', async (req, res) => {
   }
 });
 
-// Start server on the correct dynamic port
+// Explicitly bind to 0.0.0.0 for Cloud Run
 app.listen(port, '0.0.0.0', () => {
   console.log(`Backend listening on port ${port}`);
 });
