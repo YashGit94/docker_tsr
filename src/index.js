@@ -10,8 +10,7 @@ const SCOPES = [
 
 const app = express();
 
-// FIX: Cloud Run provides the PORT environment variable. 
-// It must listen on this port to pass the health check.
+// FIX: Use the port provided by Cloud Run, defaulting to 8080
 const port = process.env.PORT || 8080; 
 
 app.use(cors());
@@ -68,7 +67,7 @@ app.get('/api/mounika', async (req, res) => {
   }
 });
 
-// FIX: Listen on 0.0.0.0 to ensure the container is reachable within the Google network
+// FIX: Listen on 0.0.0.0 to ensure Cloud Run's health check can reach the container
 app.listen(port, '0.0.0.0', () => {
   console.log(`Backend listening on port ${port}`);
 });
