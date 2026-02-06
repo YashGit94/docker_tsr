@@ -1,43 +1,58 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const { BigQuery } = require('@google-cloud/bigquery');
+steps:
+  # 1. Build the Backend Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/api-backend', '-f', 'Dockerfile-backend', '.']
 
-const app = express();
-// Cloud Run provides the PORT environment variable
-const port = process.env.PORT || 8080; 
+  # 2. Build the Frontend Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/angular-frontend', '-f', 'Dockerfile-frontend', '.']
 
-app.use(cors());
-app.use(bodyParser.json());
+  # 3. Push Backend Image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/api-backend']
 
-// FIX: Initializing without a credentials object triggers 
-// Application Default Credentials (ADC), using the attached service account.
-const bigquery = new BigQuery({
-  projectId: 'elevate360-poc'
-});
+  # 4. Push Frontend Image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/angular-frontend']
 
-app.get('/api/mounika', async (req, res) => {
-  try {
-    const sql = `
-      SELECT * FROM \`elevate360-poc.ttp_metrics.security\`
-      WHERE LOWER(Name) LIKE '%mounika%'
-      LIMIT 1
-    `;
+  # 5. Deploy Backend to Cloud Run
+  # This step attaches your existing service account for keyless BigQuery access
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'api-backend'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/api-backend'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--port'
+      - '8080'
+      - '--service-account'
+      - 'gudayaswanth-devops@appspot.gserviceaccount.com' # Replace with your actual service account email
+      - '--allow-unauthenticated'
 
-    const [rows] = await bigquery.query({ query: sql, location: 'US' });
-    
-    if (!rows || rows.length === 0) {
-      return res.status(404).json({ error: 'Mounika not found' });
-    }
+  # 6. Deploy Frontend to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'angular-frontend'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/angular-frontend'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
 
-    res.json(rows[0]);
-  } catch (err) {
-    console.error('BigQuery error:', err);
-    res.status(500).json({ error: err.message });
-  }
-});
+images:
+  - 'gcr.io/$PROJECT_ID/api-backend'
+  - 'gcr.io/$PROJECT_ID/angular-frontend'
 
-// Explicitly listen on 0.0.0.0 for Cloud Run
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Backend listening on port ${port}`);
-});
+options:
+  logging: CLOUD_LOGGING_ONLY
