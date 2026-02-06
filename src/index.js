@@ -1,58 +1,34 @@
-steps:
-  # 1. Build the Backend Image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/api-backend', '-f', 'Dockerfile-backend', '.']
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const { BigQuery } = require('@google-cloud/bigquery');
 
-  # 2. Build the Frontend Image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/angular-frontend', '-f', 'Dockerfile-frontend', '.']
+const app = express();
 
-  # 3. Push Backend Image to Container Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/api-backend']
+// FIX: Cloud Run provides the PORT environment variable. 
+// It must listen on this port to pass the health check.
+const port = process.env.PORT || 8080; 
 
-  # 4. Push Frontend Image to Container Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/angular-frontend']
+app.use(cors());
+app.use(bodyParser.json());
 
-  # 5. Deploy Backend to Cloud Run
-  # This step attaches your existing service account for keyless BigQuery access
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args:
-      - 'run'
-      - 'deploy'
-      - 'api-backend'
-      - '--image'
-      - 'gcr.io/$PROJECT_ID/api-backend'
-      - '--region'
-      - 'us-central1'
-      - '--platform'
-      - 'managed'
-      - '--port'
-      - '8080'
-      - '--service-account'
-      - 'gudayaswanth-devops@appspot.gserviceaccount.com' # Replace with your actual service account email
-      - '--allow-unauthenticated'
+// Initializing without credentials triggers Application Default Credentials (ADC)
+const bigquery = new BigQuery({
+  projectId: 'elevate360-poc'
+});
 
-  # 6. Deploy Frontend to Cloud Run
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args:
-      - 'run'
-      - 'deploy'
-      - 'angular-frontend'
-      - '--image'
-      - 'gcr.io/$PROJECT_ID/angular-frontend'
-      - '--region'
-      - 'us-central1'
-      - '--platform'
-      - 'managed'
-      - '--allow-unauthenticated'
+app.get('/api/mounika', async (req, res) => {
+  try {
+    const sql = `SELECT * FROM \`elevate360-poc.ttp_metrics.security\` WHERE LOWER(Name) LIKE '%mounika%' LIMIT 1`;
+    const [rows] = await bigquery.query({ query: sql, location: 'US' });
+    if (!rows || rows.length === 0) return res.status(404).json({ error: 'Mounika not found' });
+    res.json(rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
-images:
-  - 'gcr.io/$PROJECT_ID/api-backend'
-  - 'gcr.io/$PROJECT_ID/angular-frontend'
-
-options:
-  logging: CLOUD_LOGGING_ONLY
+// FIX: Bind to 0.0.0.0 instead of localhost/127.0.0.1
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Backend listening on port ${port}`);
+});
