@@ -1,17 +1,12 @@
 FROM node:lts-alpine
 WORKDIR /app
 
-# 1. Install dependencies
 COPY package.json package-lock.json ./
-# Use --omit=dev to keep the image small for Cloud Run
-RUN npm install --production --silent
+RUN npm install --silent
 
-# 2. Copy all source code
 COPY . .
 
-# Cloud Run injects a PORT env variable. 
-# We don't hardcode EXPOSE because it's dynamic, but 8080 is the default.
+# Cloud Run defaults to 8080, but the app code handles the dynamic PORT env var.
 EXPOSE 8080
 
-# Command to start your backend.
 CMD ["node", "src/index.js"]
