@@ -3,15 +3,16 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --silent
 COPY . .
-# Ensure production configuration and correct base-href
+# Note: --base-href=/ ensures it works at the root of the Cloud Run URL
 RUN npm run build -- --configuration=production --base-href=/
 
 # Nginx stage
 FROM nginx:alpine
-# Copy custom nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-# Fix: Correctly reference the browser output directory
-COPY --from=frontend-build /app/dist/tsr/browser /usr/share/nginx/html
+
+# FIX: Check your angular.json "outputPath"
+# Based on your angular.json, the path is "dist/tsr"
+COPY --from=frontend-build /app/dist/tsr /usr/share/nginx/html
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
