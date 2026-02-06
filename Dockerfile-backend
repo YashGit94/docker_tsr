@@ -1,12 +1,15 @@
 FROM node:lts-alpine
 WORKDIR /app
 
+# Install dependencies
 COPY package.json package-lock.json ./
 RUN npm install --silent
 
+# Copy source code
 COPY . .
 
-# Cloud Run defaults to 8080, but the app code handles the dynamic PORT env var.
+# Expose the default Cloud Run port for documentation
 EXPOSE 8080
 
+# Start the application using index.js
 CMD ["node", "src/index.js"]
