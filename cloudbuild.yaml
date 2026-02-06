@@ -32,7 +32,7 @@ steps:
       - '--port'
       - '8080'
       - '--service-account'
-      - 'EXISTING_SERVICE_ACCOUNT_EMAIL' # REPLACE: with your full service account email
+      - 'gudayaswanth-devops@appspot.gserviceaccount.com' # REPLACE: with your full service account email
       - '--no-allow-unauthenticated'       # FIX: Resolves Domain Restricted Sharing policy error
 
   # 6. Deploy Frontend to Cloud Run
