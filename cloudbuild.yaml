@@ -1,19 +1,22 @@
 steps:
-  # 1. Build Backend
+  # 1. Build the Backend Image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/api-backend', '-f', 'Dockerfile-backend', '.']
 
-  # 2. Build Frontend
+  # 2. Build the Frontend Image
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/$PROJECT_ID/angular-frontend', '-f', 'Dockerfile-frontend', '.']
 
-  # 3. Push Images
+  # 3. Push Backend Image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/api-backend']
+
+  # 4. Push Frontend Image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'gcr.io/$PROJECT_ID/angular-frontend']
 
-  # 4. Deploy Backend
+  # 5. Deploy Backend to Cloud Run
+  # Uses port 8080 and attaches your existing service account for keyless BigQuery access
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -28,11 +31,11 @@ steps:
       - 'managed'
       - '--port'
       - '8080'
-      - '--allow-unauthenticated'
-      - '--set-env-vars'
-      - 'GCP_SERVICE_ACCOUNT_KEY=${_GCP_SERVICE_ACCOUNT_KEY}'
+      - '--service-account'
+      - 'EXISTING_SERVICE_ACCOUNT_EMAIL' # REPLACE: with your full service account email
+      - '--no-allow-unauthenticated'       # FIX: Resolves Domain Restricted Sharing policy error
 
-  # 5. Deploy Frontend
+  # 6. Deploy Frontend to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -45,7 +48,7 @@ steps:
       - 'us-central1'
       - '--platform'
       - 'managed'
-      - '--allow-unauthenticated'
+      - '--no-allow-unauthenticated'       # FIX: Resolves Domain Restricted Sharing policy error
 
 images:
   - 'gcr.io/$PROJECT_ID/api-backend'
@@ -53,6 +56,3 @@ images:
 
 options:
   logging: CLOUD_LOGGING_ONLY
-
-substitutions:
-  _GCP_SERVICE_ACCOUNT_KEY: 'YOUR_SERVICE_ACCOUNT_JSON_STRING_HERE'
