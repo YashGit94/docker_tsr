@@ -1,15 +1,17 @@
 FROM node:lts-alpine
 WORKDIR /app
 
-# 1. Install dependencies (only production dependencies for running the server)
+# 1. Install dependencies
 COPY package.json package-lock.json ./
-RUN npm install --silent
+# Use --omit=dev to keep the image small for Cloud Run
+RUN npm install --production --silent
 
-# 2. Copy all source code (including your src/index.js and keys file)
+# 2. Copy all source code
 COPY . .
 
-# Your backend port (3000 in the compose file)
-EXPOSE 3000
+# Cloud Run injects a PORT env variable. 
+# We don't hardcode EXPOSE because it's dynamic, but 8080 is the default.
+EXPOSE 8080
 
-# Command to start your backend. Note the path to index.js
+# Command to start your backend.
 CMD ["node", "src/index.js"]
